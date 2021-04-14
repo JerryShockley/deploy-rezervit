@@ -37,6 +37,7 @@
     state: present
     line: >-
       {{ host_vars | join(' ') }}
+      app_name='{{ app_name }}'
       ansible_ssh_extra_args='{{ host_extra_ssh_args }}'
   when: grep_host.rc == 1 and use_key_checking is false
 

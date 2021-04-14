@@ -1,2 +1,0 @@
-[primary]
-cbrm_droplet ansible_host=167.99.46.67 ansible_user=jerrys ansible_python_interpreter=/usr/bin/python3 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'

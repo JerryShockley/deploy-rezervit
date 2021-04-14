@@ -1,12 +1,7 @@
 ---
-pm2_cmd: authbind --deep pm2 start ecosystem.config.js --env production
-pm2_reload_cmd: authbind --deep pm2 reload ecosystem.config.js --env production
-# pm2_cmd: >
-#   /usr/bin/authbind --deep /usr/lib/node_modules/pm2/bin/pm2
-#   start ecosystem.config.js --env production
-db_name: cbrm_prod
+db_name: "{{ app_name }}_prod"
 node_env: production
-app_usr_group: cbrm
+app_usr_group: "app_name"
 # Vault encypted passwords
 priv_user_db_password: "{{ vault_privileged_user_db_password }}"
 jenna_db_password: "{{ vault_jenna_db_password }}"

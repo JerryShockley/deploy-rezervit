@@ -2,6 +2,8 @@
 # defaults file for jerryshockley.inventory_file
 # Ansible inventory file used by playbook: provision_debian.yml.
 
+application_name: rezervit
+
 # This file is created if it doesn't already exist.
 inventory_file: hosts
 # We turn off strict host checking, because this droplet is recreated
@@ -13,7 +15,7 @@ inventory_file: hosts
 # Uses the ssh default StrictHostKeyChecking when true.
 use_key_checking: false
 # Ansible host alias. This is required.
-host_alias: cbrm_droplet
+host_alias: "{{ app_name }}_droplet"
 # Value of ansible_user in hosts file.
 host_user: >-
       {{ hostvars[host_alias]['ansible_user'] | default('root') }}
@@ -33,4 +35,5 @@ host_vars:
   - "{{ host_alias }}"
   - "ansible_host={{ host_name }}"
   - "ansible_user={{ host_user }}"
+  - "app_name={{ application_name }}"
   - "ansible_python_interpreter={{ python_interpreter }}"

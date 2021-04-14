@@ -7,9 +7,9 @@ user = ENV['USER']
 # Opens developer specific vagrant config file containing options
 # for ports and sync directories.
 vars = YAML.load_file "./vagrant.config/vagrant.#{user}.yml"
-
+app_name = 'rezervit'
 # Reused vars for DRY.
-guest_sync_dir = '/var/www/cbrm'
+guest_sync_dir = "/var/www/#{app_name}"
 guest_port = '8090'
 guest_db_port = '5432'
 
@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder vars['hfolder'], guest_sync_dir
 
   config.vm.provider :virtualbox do |v|
-    v.name = "cbrmApp-vm"
+    v.name = "#{app_name}-vm"
     v.memory = 1024
     v.cpus = 1
   end
@@ -52,6 +52,7 @@ Vagrant.configure("2") do |config|
       debug_port: "9229",
       node_app_location: guest_sync_dir,
       privileged_user: "vagrant",
+      app_name: app_name,
       app_user: "vagrant",
       node_env: "development"
     }

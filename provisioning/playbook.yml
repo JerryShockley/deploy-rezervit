@@ -77,6 +77,8 @@
         - ca-certificates
         - build-essential
         - gnupg2
+        - inotify-tools # Watcher for phoenix live reload
+        - authbind # Let's PM2 listen to 80 sans root.
 
     - name: Include vagrant variables.
       include_vars:
@@ -99,6 +101,9 @@
         global: true
       become: true
       loop: "{{ global_node_packages }}"
+
+    - name: Install Erlang and Elixir
+      import_playbook: install_elixir_stack.yml
 
     - name: Include weareinteractive.ufw role
       import_role:

@@ -1,8 +1,7 @@
 ---
 node_env: development
-db_name: cbrm_dev
+db_name: "{{ app_name }}_dev"
 dev_db_password: hello
-pm2_cmd: pm2 start ecosystem.config.js
 # These security settings differ between VirtualBox and Digital Ocean.
 # These changes for postgresql connections lets us connection
 # do the db via Vagrant forwarded port 5432 to the db inside

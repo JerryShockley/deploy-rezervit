@@ -1,7 +1,0 @@
----
-- src: geerlingguy.git
-- src: geerlingguy.postgresql
-- src: weareinteractive.nodejs
-- src: weareinteractive.pm2
-- src: jasonheecs.ubuntu-fail2ban
-- src: weareinteractive.ufw

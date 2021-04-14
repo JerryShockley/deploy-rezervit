@@ -30,7 +30,7 @@
 # on your guest OS inside VirtualBox. This enables you to edit
 # the program files local on the host OS and the changes are
 # automatically reflected in the guest OS.
-hfolder: '/Users/jerrys/src/prototypes/cbrm'
+hfolder: '/Users/jerrys/src/prototypes/#{app_name}'
 # HTTP port number used on the host OS outside the guestOS.
 # In other words gport is forwarded to hport and you use
 # hport to connect from the host OS.

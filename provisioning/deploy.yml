@@ -55,6 +55,7 @@
       register: perm_set
       when: app_updated and ansible_user != 'vagrant'
       become: true
+      when: ansible_user != 'vagrant'
 
     - name: Set permissions on app files.
       ansible.builtin.command:
@@ -62,6 +63,7 @@
       register: perm_set
       when: app_updated and ansible_user != 'vagrant'
       become: true
+      when: ansible_user != 'vagrant'
 
     - name: Make entry point executable.
       ansible.builtin.file:
@@ -75,15 +77,6 @@
         regexp: NODE_ENV=(?!{{ node_env }})
         line: NODE_ENV={{ node_env }}
       become: true
-      when: ansible_user != 'vagrant'
-
-    - name: Add authbind config file.
-      ansible.builtin.file:
-        path: /etc/authbind/byport/80
-        group: "{{ app_usr_group }}"
-        owner: "{{ app_user }}"
-        mode: '0755'
-        state: touch
       when: ansible_user != 'vagrant'
 
     - name: Set environment variables and aliases for nonlogin users.
@@ -124,5 +117,4 @@
 
     - name: Wait for server to complete reboot.
       wait_for_connection:
-        delay: 30
-      failed_when: false
+        delay: 15
