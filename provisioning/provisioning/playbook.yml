@@ -1,0 +1,125 @@
+---
+- hosts: all
+  gather_facts: false
+  become: true
+
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+    - vars/nonvagrant_vars.yml
+  tasks:
+    # This must run before role edit_inventory file as the username
+    # for logging is changed from the default root to privileged_user.
+    - include_tasks: secure_ssh.yml
+      vars:
+        users:
+          - name: "{{ privileged_user }}"
+            ssh_key:  "{{ lookup('file', 'files/jerry_id_rsa.pub') }}"
+            ugroups:
+              - sudo
+              - "{{ app_usr_group }}"
+          - name: jenna
+            ssh_key:  "{{ lookup('file', 'files/jenna_id_rsa.pub') }}"
+            ugroups:
+              - sudo
+              - "{{ app_usr_group }}"
+          - name: "{{ app_user }}"
+            ugroup: "{{ app_usr_group }}"
+        ugroups:
+          - "{{ app_usr_group }}"
+      when: ansible_user != 'vagrant'
+
+  # Update ansible_user in hosts file to match the privileged
+  # user set by role: jerryshockley.secure_ssh.
+
+- hosts: localhost
+  connection: localhost
+  gather_facts: false
+
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+    - vars/digital_ocean.yml
+    - vars/edit_inventory_file.yml
+  tasks:
+    - include_tasks: edit_inventory_file.yml
+      when: ansible_user != 'vagrant'
+      vars:
+        host_user: "{{ lookup('env', 'USER') }}"
+        host_file: "{{ inventory_file }}"
+
+- hosts: all
+  become: true
+  vars_files:
+    - vars/vault.yml
+    - vars/main.yml
+
+  roles:
+    - geerlingguy.git
+    - jasonheecs.ubuntu-fail2ban
+    - weareinteractive.nodejs
+
+  tasks:
+    - name: Update OS.
+      apt:
+        update_cache: true
+        upgrade: full
+
+    - name: Install OS utility packages.
+      apt:
+        name: "{{ item }}"
+        state: present
+        cache_valid_time: 7200
+      loop:
+        - acl # Install setfacl support for Ansible installs.
+        - aptitude
+        - apt-transport-https
+        - ca-certificates
+        - build-essential
+        - gnupg2
+        - inotify-tools # Watcher for phoenix live reload
+        - authbind # Let's PM2 listen to 80 sans root.
+
+    - name: Include vagrant variables.
+      include_vars:
+        file: vars/vagrant_vars.yml
+      when: ansible_user == 'vagrant'
+
+    - name: Include non-vagrant variables.
+      include_vars:
+        file: vars/nonvagrant_vars.yml
+      when: ansible_user != 'vagrant'
+
+    - name: Install updated npm.
+      ansible.builtin.command: npm install -g npm@{{ npm_version }}
+      become: true
+
+    - name: Install global npm tool packages.
+      community.general.npm:
+        name: "{{ item.name }}"
+        version: "{{ item.version }}"
+        global: true
+      become: true
+      loop: "{{ global_node_packages }}"
+
+    - name: Install Erlang and Elixir
+      import_playbook: install_elixir_stack.yml
+
+    - name: Include weareinteractive.ufw role
+      import_role:
+        name: weareinteractive.ufw
+
+    - name: Include PostgreSQL role.
+      import_role:
+        name: geerlingguy.postgresql
+
+    - name: Assign app_user as owner of app db.
+      postgresql_owner:
+        db: "{{ db_name }}"
+        new_owner: "{{ app_user }}"
+        obj_type: database
+      become: true
+      become_user: postgres
+
+  # Deploy application
+- import_playbook: deploy.yml

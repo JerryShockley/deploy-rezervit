@@ -1,0 +1,35 @@
+tasks:
+    - name: Check if Erlang is Installed
+      command: dpkg-query -W esl-erlang
+      register: erlang_check_deb
+      failed_when: erlang_check_deb.rc > 1
+      changed_when: erlang_check_deb.rc == 1
+
+    - name: Download erlang.deb
+      get_url:
+        url: "https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb"
+        dest: "/home/{{ ansible_user }}/erlang-solutions_2.0_all.deb"
+      when: erlang_check_deb.rc == 1
+
+    - name: Install erlang dpk src
+      apt:
+        deb: "/home/{{ ansible_user }}/erlang-solutions_2.0_all.deb"
+      when: erlang_check_deb.rc == 1
+
+    - name: Install erlang and elixir
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        state: present
+        pkg:
+          - esl-erlang
+          - elixir
+      when: erlang_check_deb.rc == 1
+
+    - name: Install Hex
+      command: "mix local.hex --force"
+      changed_when: false
+
+    - name: Install Phoenix app generator
+      command: mix archive.install hex phx_new 1.5.8
+      changed_when: false

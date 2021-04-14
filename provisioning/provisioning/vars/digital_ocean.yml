@@ -1,0 +1,21 @@
+---
+# Inventory file
+inventory_file: hosts
+# Ansibled inventory host alias
+host_alias: "{{ app_name }}"
+# Network domain name.
+net_hostname: "{{ app_name }}.org"
+# Ansible host file group name
+inventory_group: primary
+# File path to ssh public fingerprint.
+ssh_public_fingerprint_file: ~/.ssh/id_rsa.pub.md5.fingerprint
+# DO droplet_name is also added to hosts file as the host alias.
+droplet_name: "{{ app_name }}-droplet"
+# OS image token as defined by DO
+droplet_image: ubuntu-20-04-x64
+# Virtual server token as defined by DO
+droplet_size_id: s-1vcpu-1gb
+# Server location token as defined by DO
+droplet_region: NYC3
+# Ansible encrypted DO account token ID used to validate a user via DO API.
+do_token: "{{ vault_do_token }}"

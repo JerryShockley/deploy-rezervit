@@ -1,0 +1,39 @@
+---
+# defaults file for jerryshockley.inventory_file
+# Ansible inventory file used by playbook: provision_debian.yml.
+
+application_name: rezervit
+
+# This file is created if it doesn't already exist.
+inventory_file: hosts
+# We turn off strict host checking, because this droplet is recreated
+# frequently. Every time it is recreated a new IP address is assigned
+# and the first time you log into the droplet another new entry is added
+# to the known_hosts file. This causes the file size to swell and most
+# of the entries become invalid as the IP address is discarded for a new
+# one.
+# Uses the ssh default StrictHostKeyChecking when true.
+use_key_checking: false
+# Ansible host alias. This is required.
+host_alias: "{{ app_name }}_droplet"
+# Value of ansible_user in hosts file.
+host_user: >-
+      {{ hostvars[host_alias]['ansible_user'] | default('root') }}
+# Ansible host name. May be a domain name or an IP address.
+host_name: >-
+      {{ hostvars[host_alias]['ansible_host'] | default('127.0.0.1') }}
+# The ansible inventory group that is added to the hosts file.
+inventory_group: primary
+# Location of Python 3 interpreter on remote host.
+python_interpreter: /usr/bin/python3
+# ssh args to turn off the ssh default StrictHostKeyChecking.
+# This is added to the host file if use_key_checking
+# is false.
+host_extra_ssh_args: "-o StrictHostKeyChecking=no"
+# Simplifies building host var line.
+host_vars:
+  - "{{ host_alias }}"
+  - "ansible_host={{ host_name }}"
+  - "ansible_user={{ host_user }}"
+  - "app_name={{ application_name }}"
+  - "ansible_python_interpreter={{ python_interpreter }}"
