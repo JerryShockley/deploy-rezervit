@@ -57,6 +57,13 @@
   roles:
     - geerlingguy.git
     - jasonheecs.ubuntu-fail2ban
+    - role: jnv.unattended-upgrades
+      vars:
+        unattended_origins_patterns:
+          'origin=Ubuntu,archive=${distro_codename}-security'
+        unattended_automatic_reboot: true
+        unattended_automatic_reboot_time: '02:00'
+        unattended_mail: "{{ admin_email }}"
     - weareinteractive.nodejs
 
   tasks:
@@ -78,7 +85,7 @@
         - build-essential
         - gnupg2
         - inotify-tools # Watcher for phoenix live reload
-        - authbind # Let's PM2 listen to 80 sans root.
+        - python3-pip
 
     - name: Include vagrant variables.
       include_vars:
@@ -103,7 +110,9 @@
       loop: "{{ global_node_packages }}"
 
     - name: Install Erlang and Elixir
-      import_playbook: install_elixir_stack.yml
+      import_tasks: install_elixir_stack.yml
+      vars:
+        application_user: "{{app_user}}"
 
     - name: Include weareinteractive.ufw role
       import_role:
@@ -122,4 +131,4 @@
       become_user: postgres
 
   # Deploy application
-- import_playbook: deploy.yml
+# - import_playbook: deploy.yml
