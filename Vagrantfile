@@ -9,7 +9,7 @@ user = ENV['USER']
 vars = YAML.load_file "./vagrant.config/vagrant.#{user}.yml"
 app_name = 'rezervit'
 # Reused vars for DRY.
-guest_sync_dir = "/var/www/#{app_name}"
+guest_sync_dir = "/home/vagrant/#{app_name}"
 guest_port = '8090'
 guest_db_port = '5432'
 
@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
       remote_port: guest_port,
       remote_db_port:  guest_db_port,
       debug_port: "9229",
-      node_app_location: guest_sync_dir,
+      app_location: guest_sync_dir,
       privileged_user: "vagrant",
       app_name: app_name,
       app_user: "vagrant",
