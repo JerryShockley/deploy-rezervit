@@ -13,6 +13,7 @@ tags
 /node_modules/
 .env
 .byebug_history
+*.dump
 *.pyc
 *.sw[nop]
 .bundle
