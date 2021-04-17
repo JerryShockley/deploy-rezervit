@@ -1,18 +1,6 @@
 ---
 postgres_users_no_log: true
-
-# Ansible inventory file used by playbook: provision_debian.yml.
-# This file is created if it doesn't already exist.
-node_app_location: '/var/www/{{ app_name }}'
-nodejs_version: "14.x"
-npm_version: ^7.5.0
-global_node_packages:
-  - {name: 'pm2', version: '^4.5.0'}
-  - {name: 'nodemon', version: '^2.0.7'}
-  - {name: 'sequelize-cli', version: '^6.2.0'}
-prod_db_name: "{{ app_name }}_prod"
-dev_db_name: "{{ app_name }}_dev"
-git_repo: "https://github.com/JerryShockley/{{ app_name }}.git"
+admin_email: noise1@shockleynet.com
 # nodejs_install_npm_user: "{{ ansible_user }}"
 # Priviliged user (with sudo privileges) used to ssh into server.
 privileged_user: jerrys
@@ -21,6 +9,15 @@ privileged_user: jerrys
 # infrastructure.
 # To create db and roles. Not a superuser.
 app_user: auser
+# Ansible inventory file used by playbook: provision_debian.yml.
+# This file is created if it doesn't already exist.
+app_location: '/home/{{ app_user }}/{{ app_name }}'
+nodejs_version: "14.x"
+npm_version: ^7.5.0
+global_node_packages: []
+prod_db_name: "{{ app_name }}_prod"
+dev_db_name: "{{ app_name }}_dev"
+git_repo: "https://github.com/JerryShockley/{{ app_name }}.git"
 # app_user_sys_password: "{{ vault_app_user_sys_password }}"
 
 # Postgresql driver for Python3
