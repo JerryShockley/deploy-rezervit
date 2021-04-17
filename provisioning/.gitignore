@@ -4,7 +4,7 @@ test-config.vim
 .netrwhist
 /.git/
 /.vagrant/
-provisioning/roles/
+/provisioning/roles/
 /log/
 /tmp/
 /vendor/
@@ -18,7 +18,5 @@ tags
 .bundle
 .cache/
 /bower_components/
-
 provisioning/hosts
-
 provisioning/test.yml
